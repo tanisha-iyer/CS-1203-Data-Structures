@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int x;
+    struct TreeNode* left;
+    struct TreeNode* right;
+};
+
+struct StackNode {
+    struct TreeNode* x;
+    struct StackNode* next;
+};
+
+struct StackNode* emptystackNode(struct TreeNode* treeNode) {
+    struct StackNode* stackNode = (struct StackNode*) malloc(sizeof(struct StackNode));
+    stackNode -> x = treeNode;
+    stackNode -> next = NULL;
+    return stackNode;
+}
+
+struct StackNode* emptystack() {
+    return NULL;
+}
+
+int empty(struct StackNode* root) {
+    if (root == NULL) {
+        return 1; 
+    } 
+        else {
+        return 0; 
+    }
+}
+
+void push(struct StackNode** root, struct TreeNode* treeNode) {
+    struct StackNode* stackNode = emptystackNode(treeNode);
+    stackNode -> next = *root;
+    *root = stackNode;
+}
+
+struct TreeNode* rem(struct StackNode** root) {
+    if (empty(*root)) {
+        return NULL;
+    }
+    struct StackNode* temp = *root;
+    *root = (*root)->next;
+    struct TreeNode* rem = temp -> x;
+    free(temp);
+    return rem;
+}
+
+void traversal(struct TreeNode* root) {
+    struct TreeNode* present = root;
+    struct StackNode* stack = emptystack();
+
+    while (present || !empty(stack)) {
+        while (present) {
+            push(&stack, present);
+            present = present -> left;
+        }
+        present = rem(&stack);
+        printf("%d ", present -> x);
+        present = present -> right;
+    }
+}
+
+struct TreeNode* newTreeNode(int x) {
+    struct TreeNode* newNode = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    newNode -> x = x;
+    newNode -> left = NULL;
+    newNode -> right = NULL;
+    return newNode;
+}
+
+int main() {
+    struct TreeNode* root = newTreeNode(17);
+    root -> left = newTreeNode(9);
+    root -> right = newTreeNode(7);
+    root -> left -> left = newTreeNode(11);
+    root -> left -> right = newTreeNode(5);
+
+    printf(" ");
+    traversal(root);
+
+    return 0;
+}
