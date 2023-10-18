@@ -1,1 +1,202 @@
+#include <stdio.h>
+#include <stdlib.h>
 
+// AVL tree node
+struct node {
+    int key;
+    struct node* left;
+    struct node* right;
+    int height;
+};
+
+// All functions used for deletion 
+struct node* createNode(int key);
+int max(int a, int b);
+int getHeight(struct node* n);
+int getBalanceFactor(struct node* n);
+struct node* rightRotate(struct node* y);
+struct node* leftRotate(struct node* x);
+struct node* insert(struct node* node, int key);
+struct node* minnode(struct node* node);
+struct node* deleteNode(struct node* root, int key);
+
+
+// gives height of a node 
+int getHeight(struct node* n) {
+    if (n == NULL)
+        return 0;
+    return n->height;
+}
+
+// finds the maximum between two integers 
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+// balance factor - condition for AVL trees 
+int getBalanceFactor(struct node* n) {
+    if (n == NULL) {
+        return 0;
+    }
+    return getHeight(n->left) - getHeight(n->right);
+}
+
+// create - allocates a new node
+struct node* createNode(int key) {
+    struct node* node = (struct node*)malloc(sizeof(struct node));
+    node->key = key; // this function takes key to represent value of new node 
+    node->left = NULL;
+    node->right = NULL;
+    node->height = 1;
+    return node;
+}
+
+// right rotate
+struct node* rightRotate(struct node* y) {
+    struct node* x = y->left;
+    struct node* T2 = x->right;
+
+    x->right = y;
+    y->left = T2;
+    x->height = max(getHeight(x->right), getHeight(x->left)) + 1;
+    y->height = max(getHeight(y->right), getHeight(y->left)) + 1;
+    return x;
+}
+
+// left rotation
+struct node* leftRotate(struct node* x) {
+    struct node* y = x->right;
+    struct node* T2 = y->left;
+    y->left = x;
+    x->right = T2;
+    x->height = max(getHeight(x->right), getHeight(x->left)) + 1;
+    y->height = max(getHeight(y->right), getHeight(y->left)) + 1;
+    return y;
+}
+
+// min value
+struct node* minnode(struct node* node) {
+    struct node* current = node;
+    while (current->left != NULL)
+        current = current->left;
+    return current;
+}
+
+// insert function
+struct node* insert(struct node* node, int key) {
+    if (node == NULL)
+        return createNode(key);
+    if (key < node->key)
+        node->left = insert(node->left, key);
+    else if (key > node->key)
+        node->right = insert(node->right, key);
+    node->height = 1 + max(getHeight(node->left), getHeight(node->right));
+
+    int bf = getBalanceFactor(node);
+
+    // Left Left Case
+    if (bf > 1 && key < node->left->key) {
+        return rightRotate(node);
+    }
+    // Right Right Case
+    if (bf < -1 && key > node->right->key) {
+        return leftRotate(node);
+    }
+    // Left Right Case
+    if (bf > 1 && key > node->left->key) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+    // Right Left Case
+    if (bf < -1 && key < node->right->key) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+    return node;
+}
+
+// deletion function
+struct node* deleteNode(struct node* root, int key) {
+    if (root == NULL)
+        return root;
+
+    if (key < root->key)
+        root->left = deleteNode(root->left, key);
+    else if (key > root->key)
+        root->right = deleteNode(root->right, key);
+    else {
+        if ((root->left == NULL) || (root->right == NULL)) {
+            struct node* temp = root->left ? root->left : root->right;
+            if (temp == NULL) { // leaf node 
+                temp = root;
+                root = NULL;
+            }
+            else 
+                *root = *temp; 
+            free(temp);
+        }
+        else {
+            struct node* temp = minnode(root->right);
+            root->key = temp->key;
+            root->right = deleteNode(root->right, temp->key);
+        }
+    }
+
+    if (root == NULL) // tree with one node 
+        return root;
+    root->height = 1 + max(getHeight(root->left), getHeight(root->right)); // new height of node 
+    int balance = getBalanceFactor(root); // to check whether this node became unbalanced
+
+    // cases for rotation when the AVL tree becomes unbalanced after each deletion
+    if (balance > 1 && getBalanceFactor(root->left) >= 0) // LL Case
+        return rightRotate(root);
+
+    if (balance > 1 && getBalanceFactor(root->left) < 0) { // LR Case
+        root->left = leftRotate(root->left);
+        return rightRotate(root);
+    }
+
+    if (balance < -1 && getBalanceFactor(root->right) <= 0) // RR Implementation 
+        return leftRotate(root);
+
+    if (balance < -1 && getBalanceFactor(root->right) > 0) { // RL Case
+        root->right = rightRotate(root->right);
+        return leftRotate(root);
+    }
+
+    return root;
+}
+
+// Utility function to print preorder traversal
+void preOrder(struct node* root) {
+    if (root != NULL) {
+        printf("%d ", root->key);
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+}
+
+int main() {
+    struct node* root = NULL;
+
+    root = insert(root, 10);
+    root = insert(root, 20);
+    root = insert(root, 30);
+    root = insert(root, 40);
+    root = insert(root, 50);
+    root = insert(root, 60);
+    root = insert(root, 70);
+    root = insert(root, 80);
+    root = insert(root, 90);
+
+    printf("Preorder traversal of the AVL tree: ");
+    preOrder(root);
+    printf("\n");
+
+    root = deleteNode(root, 20);
+
+    printf("Preorder traversal after deleting 20: ");
+    preOrder(root);
+
+    return 0;
+}
