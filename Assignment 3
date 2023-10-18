@@ -1,4 +1,4 @@
-// Deletion in AVL Tree
+// 1) Deletion in AVL Tree
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,7 +10,7 @@ struct node {
     int height;
 };
 
-// Functions to be used 
+// Functions to be used for deletion 
 int max(int a, int b);
 int getHeight(struct node* n);
 int getBalanceFactor(struct node* n);
@@ -21,19 +21,19 @@ struct node* insert(struct node* node, int key);
 struct node* minnode(struct node* node);
 struct node* deleteNode(struct node* root, int key);
 
-// finding the height of the AVL tree
+// function for finding the height of the AVL tree
 int getHeight(struct node* n) {
     if (n == NULL)
         return 0;
     return n->height;
 }
 
-// max
+// returns the maximum between the two integers - used to help track the height of the nodes    
 int max(int a, int b) {
     return (a > b) ? a:b;
 }
 
-// balance factor
+// balance factor - condition for AVL trees 
 int getBalanceFactor(struct node* n) {
     if (n == NULL) {
         return 0;
@@ -51,7 +51,7 @@ struct node* createNode(int key) {
     return node;
 }
 
-// right rotate
+// right rotate of node 
 struct node* rightRotate(struct node* y) {
     struct node* x = y->left;
     struct node* T2 = x->right;
@@ -63,7 +63,7 @@ struct node* rightRotate(struct node* y) {
     return x;
 }
 
-// left rotation
+// left rotation of node 
 struct node* leftRotate(struct node* x) {
     struct node* y = x->right;
     struct node* T2 = y->left;
@@ -74,9 +74,9 @@ struct node* leftRotate(struct node* x) {
     return y;
 }
 
-// returns the node with the minimum value
+// returns the node with the minimum value - used to adjust the tree after deletion by selecting the inorder predecessor
 struct node* minnode(struct node* node) {
-    struct node* i = node; // i is the curent node 
+    struct node* i = node;  // i is the curent node
     while (i->left != NULL)
         i = i->left;
     return i;
@@ -212,3 +212,6 @@ int main() {
     preOrder(root);
     return 0;
 }
+
+
+
