@@ -1,0 +1,74 @@
+// tower of hanoi 
+#include <stdio.h>
+
+void hanoi(int n, char r1, char r2, char r3) {
+    if (n == 1) {
+        printf("disk 1 from %c to %c\n", r1, r3);
+        return;
+    }
+
+    hanoi(n - 1, r1, r3, r2);
+    printf("disk %d from %c to %c\n", n, r1, r3);
+    hanoi(n - 1, r2, r1, r3);
+}
+
+int main() {
+    int n;
+    printf("number of disks: ");
+    scanf("%d", &n);
+    hanoi(n, 'A','B','C');
+    return 0;
+}
+
+// eight queens problem 
+#include <stdio.h>
+#include <math.h>
+
+void queen(int row, int p);
+int chess[8], count;
+
+int main() {
+    int p = 8;
+    queen(1, p);
+    return 0;
+}
+
+void print(int p) {
+    int i, j;
+    printf("\n\n", ++count);
+
+    for (i = 1; i <= p; ++i) {
+        printf("\n\n");
+        for (j = 1; j <= p; ++j) {
+            if (chess[i] == j)
+                printf("\tQ");
+            else
+                printf("\t.");
+        }
+    }
+}
+
+int place(int row, int col) {
+    int i;
+    for (i = 1; i <= row - 1; ++i) {
+        if (chess[i] == col)
+            return 0;
+        else if (abs(chess[i] - col) == abs(i - row))
+            return 0;
+    }
+
+    return 1;
+}
+
+void queen(int row, int p) {
+    int col;
+    for (col = 1; col <= p; ++col) {
+        if (place(row, col)) {
+            chess[row] = col;
+            if (row == p)
+                print(p);
+            else
+                queen(row + 1, p);
+        }
+    }
+}
