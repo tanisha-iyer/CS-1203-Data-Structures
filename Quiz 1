@@ -1,0 +1,81 @@
+#include <stdio.h>
+
+// function to print the elements of the array 
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+// allows swapping of values of integers 
+void swap(int *xp, int *yp) {
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+
+// function for heapify
+void heapify(int arr[], int n, int i) {
+    int largest, left, right;
+
+    while (1) {
+        left = 2 * i + 1; // left child node 
+        right = 2 * i + 2; // right child node 
+        largest = i; // current node is i and is defined as largest at current moment
+
+        if (left < n && arr[left] > arr[largest])
+            largest = left; // left child is greater than the current node 
+
+        if (right < n && arr[right] > arr[largest])
+            largest = right; // checking at right node also 
+
+        if (largest != i) {
+            swap(&arr[i], &arr[largest]);
+            i = largest; // if the current node is not equal to largest - there was a swap
+        } 
+            else {
+                break; // when no swaps made, break - max heap property holds true 
+        }
+    }
+}
+
+// function to insert element in max heap 
+void insertion(int arr[], int n, int elm) {
+    int i, parent;
+    arr[n] = elm;
+    i = n;
+
+    while (i != 0) {
+        parent = (i - 1) / 2;
+
+        if (arr[parent] < arr[i]) {
+            swap(&arr[i], &arr[parent]);
+        } else {
+            break;
+        }
+
+        i = parent;
+    }
+}
+
+int main() {
+    int arr1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int arr2[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int n = 10;
+
+    printArray(arr1, n);
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        heapify(arr1, n, i);
+    }
+    printArray(arr1, n);
+
+    printf("\n");
+    printArray(arr2, n);
+    for (int i = 0; i < n; i++) {
+        insertion(arr2, i, arr2[i]);
+    }
+    printArray(arr2, n);
+
+    return 0;
+}
