@@ -80,6 +80,7 @@ int main() {
     printArray(arr1, n);
     for (int i = n / 2 - 1; i >= 0; i--)
         heapify(arr1, n, i);
+        printArray(arr1, n);
     printf("comparisons - %d, swaps - %d\n", comparisons, swaps);
 
     count(); // Reset counters before using them
@@ -87,6 +88,7 @@ int main() {
     printArray(arr2, n);
     for (int i = 0; i < n; i++) {
         heapInsert(arr2, i, arr2[i]);
+        printArray(arr2, n);
     }
     printf("comparisons - %d, swaps - %d\n", comparisons, swaps);
     return 0;
