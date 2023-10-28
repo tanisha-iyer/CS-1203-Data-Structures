@@ -3,7 +3,7 @@
 int comparisons = 0;
 int swaps = 0;
 
-// Function to print the array
+// function to print the array
 void printArray(int arr[], int n) {
     for (int i = 0; i < n; i++) {
         printf("%d ", arr[i]);
@@ -11,59 +11,60 @@ void printArray(int arr[], int n) {
     printf("\n");
 }
 
-// Function to swap two elements and count swaps
-void swap(int *a, int *b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
+// function that lets two integer variables swap values 
+void swap(int *xp, int *yp) {
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
     swaps++;
 }
 
-void count() { // tracking comparisons and swaps in heapify 
+void count() { // function to keep count of comparisons and swaps 
     comparisons = 0;
     swaps = 0;
 }
 
-// Function for heapify
+// function for heapify
 void heapify(int arr[], int n, int i) {
     int largest, left, right;
     while (1) {
         left = 2 * i + 1; // left child node 
-        right = 2 * i + 2; // right child node
-        largest = i;
+        right = 2 * i + 2; // right child node 
+        largest = i; // current node is assigned as largest
         if (left < n) {
             comparisons++;
             if (arr[left] > arr[largest])
-                largest = left;
+                largest = left; // if the left child node > than the current node they are swapped
         }
 
-        if (right < n) {
-            comparisons++;
+        if (right < n) { // same comparison then done for the right child node 
+            comparisons++; // this is added as an additional comparison is performed 
             if (arr[right] > arr[largest])
                 largest = right;
         }
-        if (largest != i) {
-            swap(&arr[i], &arr[largest]);
-            i = largest;
-        } else {
-            break;
+        if (largest != i) { // if i is not = largest then a swap was made
+            swap(&arr[i], &arr[largest]); 
+            i = largest; // if both child nodes are smaller than the parent node, then current node stays largest 
+        } 
+            else {
+                break; // loop is broken if there are no swaps as the array is in max heap state
         }
     }
 }
 
-// Function for heapInsert
+// function for heap insert
 void heapInsert(int arr[], int n, int elm) {
     int i, parent;
-    arr[n] = elm;
-    i = n;
+    arr[n] = elm; // elm is the element to be inserted 
+    i = n; 
 
-    if (i == 0)
+    if (i == 0) // when there is an empty array 
         return;
     while (i != 0) {
-        parent = (i - 1) / 2;
-        comparisons++;
+        parent = (i - 1) / 2; // index of parent node in an array 
+        comparisons++; // in every loop the number of comparisons incrementally increases 
         if (arr[parent] < arr[i]) {
-            swap(&arr[i], &arr[parent]);
+            swap(&arr[i], &arr[parent]); // swapped if child node is greater than parent 
         } else {
             break;
         }
@@ -75,21 +76,25 @@ int main() {
     int arr1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     int arr2[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     int n = 10;
-    count(); // Reset counters before using them
+    count(); // reset counters 
 
     printArray(arr1, n);
-    for (int i = n / 2 - 1; i >= 0; i--)
+    for (int i = n / 2 - 1; i >= 0; i--) {
         heapify(arr1, n, i);
-        printArray(arr1, n);
-    printf("comparisons - %d, swaps - %d\n", comparisons, swaps);
+    }
+    printArray(arr1, n); // final array after heapify function performed 
+    printf("comparisons: %d, swaps: %d\n", comparisons, swaps);
 
-    count(); // Reset counters before using them
-
+    count(); // reset counters 
+    printf("\n");
     printArray(arr2, n);
     for (int i = 0; i < n; i++) {
         heapInsert(arr2, i, arr2[i]);
-        printArray(arr2, n);
     }
-    printf("comparisons - %d, swaps - %d\n", comparisons, swaps);
+    printArray(arr2, n); // final array after heap insert function performed 
+    printf("comparisons: %d, swaps: %d\n", comparisons, swaps);
     return 0;
 }
+
+// Worst case complexity for heapify - O(log n). This is because in the worst case, the function has to traverse through the entire tree. The height of a binary search tree with n elements is log(n). Therefore the time complexity is dependent on the height making it O(log(n))
+// Worst case complexity for heap insert - O(log(n)). The worst case is when an element is inserted at the bottom and has to swap to go to the root to maintain max heap property. The number of swaps is equal to the height of the tree which is log(n) in the case of binary trees. 
