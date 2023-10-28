@@ -1,6 +1,9 @@
 #include <stdio.h>
 
-// function to print the elements of the array 
+int comparisons = 0;
+int swaps = 0;
+
+// Function to print the array
 void printArray(int arr[], int n) {
     for (int i = 0; i < n; i++) {
         printf("%d ", arr[i]);
@@ -8,66 +11,83 @@ void printArray(int arr[], int n) {
     printf("\n");
 }
 
-// allows swapping of values of integers 
-void swap(int *xp, int *yp) {
-    int temp = *xp;
-    *xp = *yp;
-    *yp = temp;
+// Function to swap two elements and count swaps
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+    swaps++;
 }
 
-// function for heapify
+void count() { // tracking comparisons and swaps in heapify 
+    comparisons = 0;
+    swaps = 0;
+}
+
+// Function for heapify
 void heapify(int arr[], int n, int i) {
     int largest, left, right;
-
     while (1) {
         left = 2 * i + 1; // left child node 
-        right = 2 * i + 2; // right child node 
-        largest = i; // current node is i and is defined as largest at current moment
+        right = 2 * i + 2; // right child node
+        largest = i;
+        if (left < n) {
+            comparisons++;
+            if (arr[left] > arr[largest])
+                largest = left;
+        }
 
-        if (left < n && arr[left] > arr[largest])
-            largest = left; // left child is greater than the current node 
-
-        if (right < n && arr[right] > arr[largest])
-            largest = right; // checking at right node also 
-
+        if (right < n) {
+            comparisons++;
+            if (arr[right] > arr[largest])
+                largest = right;
+        }
         if (largest != i) {
             swap(&arr[i], &arr[largest]);
-            i = largest; // if the current node is not equal to largest - there was a swap
-        } 
-            else {
-                break; // when no swaps made, break - max heap property holds true 
+            i = largest;
+        } else {
+            break;
         }
     }
 }
 
-// function to insert element in max heap 
-void insertion(int arr[], int n, int elm) {
+// Function for heapInsert
+void heapInsert(int arr[], int n, int elm) {
     int i, parent;
-    arr[n] = elm; // elm is the element to be inserted in the array, n is index to insert elm
-    i = n; // i is the current index in array 
+    arr[n] = elm;
+    i = n;
 
+    if (i == 0)
+        return;
     while (i != 0) {
-        parent = (i - 1) / 2; // to calculate index of parent of an element 
-
-        if (arr[parent] < arr[i]) {  
-            swap(&arr[i], &arr[parent]); // larger value gets swapped higher in the tree
-        } 
-            else {
-                break; // if no swaps made then break the loop 
+        parent = (i - 1) / 2;
+        comparisons++;
+        if (arr[parent] < arr[i]) {
+            swap(&arr[i], &arr[parent]);
+        } else {
+            break;
         }
-
-        i = parent; // updates i as parent of the node 
+        i = parent;
     }
 }
 
 int main() {
     int arr1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int arr2[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     int n = 10;
+    count(); // Reset counters before using them
 
-    printArray(arr1, n); // print original array of arr1
-    for (int i = n / 2 - 1; i >= 0; i--) {  // starts from the [n/2 - 1] index of the array 
+    printArray(arr1, n);
+    for (int i = n / 2 - 1; i >= 0; i--)
         heapify(arr1, n, i);
+    printf("comparisons - %d, swaps - %d\n", comparisons, swaps);
+
+    count(); // Reset counters before using them
+
+    printArray(arr2, n);
+    for (int i = 0; i < n; i++) {
+        heapInsert(arr2, i, arr2[i]);
     }
-    printArray(arr1, n); // print after heapify function 
+    printf("comparisons - %d, swaps - %d\n", comparisons, swaps);
     return 0;
 }
