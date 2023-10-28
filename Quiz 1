@@ -43,39 +43,31 @@ void heapify(int arr[], int n, int i) {
 // function to insert element in max heap 
 void insertion(int arr[], int n, int elm) {
     int i, parent;
-    arr[n] = elm;
-    i = n;
+    arr[n] = elm; // elm is the element to be inserted in the array, n is index to insert elm
+    i = n; // i is the current index in array 
 
     while (i != 0) {
-        parent = (i - 1) / 2;
+        parent = (i - 1) / 2; // to calculate index of parent of an element 
 
-        if (arr[parent] < arr[i]) {
-            swap(&arr[i], &arr[parent]);
-        } else {
-            break;
+        if (arr[parent] < arr[i]) {  
+            swap(&arr[i], &arr[parent]); // larger value gets swapped higher in the tree
+        } 
+            else {
+                break; // if no swaps made then break the loop 
         }
 
-        i = parent;
+        i = parent; // updates i as parent of the node 
     }
 }
 
 int main() {
     int arr1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    int arr2[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     int n = 10;
 
-    printArray(arr1, n);
-    for (int i = n / 2 - 1; i >= 0; i--) {
+    printArray(arr1, n); // print original array of arr1
+    for (int i = n / 2 - 1; i >= 0; i--) {  // starts from the [n/2 - 1] index of the array 
         heapify(arr1, n, i);
     }
-    printArray(arr1, n);
-
-    printf("\n");
-    printArray(arr2, n);
-    for (int i = 0; i < n; i++) {
-        insertion(arr2, i, arr2[i]);
-    }
-    printArray(arr2, n);
-
+    printArray(arr1, n); // print after heapify function 
     return 0;
 }
